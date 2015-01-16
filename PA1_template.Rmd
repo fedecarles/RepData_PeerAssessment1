@@ -1,25 +1,40 @@
 ---
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
+title: "PA1_template.Rmd"
+author: "Federico Carlés"
+date: "15/01/2015"
+output: html_document
 ---
 
 
-## Loading and preprocessing the data
+library(dplyr)
+```{r, echo=TRUE}
+data <- read.csv(unzip("activity.zip"), header = TRUE)
+data <- na.omit(data)
+data$date <- as.Date(data$date)
+data$interval <- sprintf("%04d", data$interval)
+data$interval <- as.POSIXct(strptime(data$interval, "%H%M"))
+
+```
+
+You can also embed plots, for example:
+
+```{r, echo=TRUE}
+sum_data <- aggregate(data$steps, by = list(data$date), FUN = sum)
+hist(sum_data$x, xlab = "number of steps", main = "Number of steps per day")
+mean(sum_data$x)
+median(sum_data$x)
+```
+
+```{r, echo=TRUE}
+avg_activity <- aggregate(data$steps, by = list(data$interval), FUN = mean)
+plot(avg_activity$Group.1, avg_activity$x, xlab = "Interval", ylab = "Average number of steps", main = "Average Daily Activity", type = "l")
+act_ordered = avg_activity[order(avg_activity$x, decreasing=TRUE),]
+head(act_ordered)
+```
+
+```{r, echo=TRUE}
+data <- read.csv(unzip("activity.zip"), header = TRUE)
+sum(is.na(data))
+```
 
 
-
-## What is mean total number of steps taken per day?
-
-
-
-## What is the average daily activity pattern?
-
-
-
-## Imputing missing values
-
-
-
-## Are there differences in activity patterns between weekdays and weekends?
